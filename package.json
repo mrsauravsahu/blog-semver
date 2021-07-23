@@ -1,6 +1,6 @@
 {
   "name": "blog-semver",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "setting up semver for your projects with Github Actions",
   "main": "index.js",
   "scripts": {
