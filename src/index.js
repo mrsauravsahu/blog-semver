@@ -1,3 +1,3 @@
 const packageInfo = require('../package.json')
 
-console.log(`v${packageInfo.version}`)
+console.log(JSON.stringify({version:packageInfo.version}, undefined, 2))
