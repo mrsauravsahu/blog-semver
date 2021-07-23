@@ -55,7 +55,7 @@ jobs:
         run: npm t
 
       - name: build artifact tar file
-        run: tar cvf {{ env.NAME }} src/**
+        run: tar cvf ${{ env.NAME }} src/**
 
       - name: upload artifact
         # if: ${{ github.ref == env.DEPLOY_BRANCH }}
