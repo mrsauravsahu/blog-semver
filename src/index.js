@@ -1,3 +1,3 @@
-const packageInfo = require('./package.json')
+const packageInfo = require('../package.json')
 
 console.log(`v${packageInfo.version}`)
