@@ -1,0 +1,69 @@
+name: "ci"
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'src/**'
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'src/**'
+
+env:
+  NAME: blog-semver
+  DEPLOY_BRANCH: 'refs/heads/develop'
+  NODE_VERSION: "14.17.1"
+
+jobs:
+  build:
+    defaults:
+      run: 
+        shell: bash
+        
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout to branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: setup node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: install gitversion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+
+      - name: execute gitversion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
+          configFilePath: gitversion.yml
+
+      - name: install deps
+        run: npm ci
+
+      - name: run unit tests
+        run: npm t
+
+      - name: build artifact tar file
+        run: tar cvf {{ env.NAME }} src/**
+
+      - name: upload artifact
+        # if: ${{ github.ref == env.DEPLOY_BRANCH }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ env.SERVICE_NAME }}
+          path: ${{ format('{0}.tar', env.SERVICE_NAME) }}
+
+      - name: tag the build
+        # if: ${{ github.ref == env.HOT_BRANCH }}
+        run: git tag ${{ format('v{0}', steps.gitversion.outputs.MajorMinorPatch) }} && git push origin ${{ format('v{0}', steps.gitversion.outputs.MajorMinorPatch) }}
