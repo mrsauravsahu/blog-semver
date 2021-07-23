@@ -63,8 +63,15 @@ jobs:
           cat package.json
           echo package-lock.json
           cat package-lock.json
-          cat package.json | jq ".version = \"$NEXT_VERSION\"" | tee package.json
-          cat package-lock.json | jq ".version = \"$NEXT_VERSION\"" | tee package-lock.json
+          
+          FILE=./package.json
+          MODIFIED_FILE_CONTENTS=`node -e "const data = require('$FILE'); let modifiedData = { ...data, version: '$NEXT_VERSION' }; console.log(JSON.stringify(modifiedData, undefined, 2))"`
+          echo $MODIFIED_FILE_CONTENTS > $FILE
+
+          FILE=./package-lock.json
+          MODIFIED_FILE_CONTENTS=`node -e "const data = require('$FILE'); let modifiedData = { ...data, version: '$NEXT_VERSION' }; console.log(JSON.stringify(modifiedData, undefined, 2))"`
+          echo $MODIFIED_FILE_CONTENTS > $FILE
+          
           echo modified package.json
           cat package.json
           echo modified package-lock.json
