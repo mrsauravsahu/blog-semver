@@ -55,14 +55,14 @@ jobs:
         run: npm t
 
       - name: build artifact tar file
-        run: tar cvf ${{ env.NAME }} src/**
+        run: tar cvf ${{ env.NAME }}.tar.gz src/**
 
       - name: upload artifact
         # if: ${{ github.ref == env.DEPLOY_BRANCH }}
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ env.SERVICE_NAME }}
-          path: ${{ format('{0}.tar', env.SERVICE_NAME) }}
+          name: ${{ env.NAME }}.tar.gz
+          path: ${{ env.NAME }}.tar.gz
 
       - name: tag the build
         # if: ${{ github.ref == env.HOT_BRANCH }}
