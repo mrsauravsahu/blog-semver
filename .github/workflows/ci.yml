@@ -58,12 +58,11 @@ jobs:
         run: tar cvf out.tar.gz src/** package*
 
       - name: upload artifact
-        # if: ${{ github.ref == env.DEPLOY_BRANCH }}
         uses: actions/upload-artifact@v1
         with:
           name: ${{ format('{0}-v{1}.tar.gz', env.NAME, steps.gitversion.outputs.MajorMinorPatch) }}
           path: out.tar.gz
 
       - name: tag the build
-        # if: ${{ github.ref == env.HOT_BRANCH }}
+        if: ${{ github.ref == env.DEPLOY_BRANCH }}
         run: git tag ${{ format('v{0}', steps.gitversion.outputs.MajorMinorPatch) }} && git push origin ${{ format('v{0}', steps.gitversion.outputs.MajorMinorPatch) }}
