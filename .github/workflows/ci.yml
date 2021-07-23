@@ -54,6 +54,16 @@ jobs:
       - name: run unit tests
         run: npm t
 
+      - name: write version to project
+        run: |
+          NEXT_VERSION=`gitversion gitversion.yml /showvariable MajorMinorPatch`
+          echo "NEXT_VERSION=v$NEXT_VERSION"
+          cat package.json | jq ".version = \"v$NEXT_VERSION\"" | tee package.json
+          cat package-lock.json | jq ".version = \"v$NEXT_VERSION\"" | tee package-lock.json
+          git config -g user.name "Github Actions"
+          git config -g user.email "noreply@github.com"
+          git add package* && git commit -m "[skip ci] bump version" && git push origin ${GITHUB_REF#refs/heads/}
+
       - name: build artifact tar file
         run: tar cvf out.tar.gz src/** package*
 
